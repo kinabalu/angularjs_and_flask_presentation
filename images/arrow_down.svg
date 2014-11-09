@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg"
+     version="1.0" width="300px" height="300px" viewBox="-500, -600 ,1000, 1200" >
+  <polygon  style="stroke:none; fill:#fff;" 
+    points="100,-600 100,200  500,-200 500,100  0,600  -500,100 -500,-200 -100,200 -100,-600 " /> <!-- arrow down -->
+</svg>

@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>AngularJS and Flask sitting in a tree</title>
+
+		<meta name="description" content="A presentation about building apps using AngularJS and Flask the simpler Python framework">
+		<meta name="author" content="Andrew Lombardi">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="reveal.js/css/reveal.min.css">
+		<link rel="stylesheet" href="reveal.js/css/theme/default.css" id="theme">
+		<link rel="stylesheet" href="css/reset.css">
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+		<link rel="stylesheet" href="reveal.js-fullscreen-img/fullscreen-img.css" />
+
+		<style>
+			.button {
+				-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+				-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+				box-shadow:inset 0px 1px 0px 0px #ffffff;
+				background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+				background:-moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
+				filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf');
+				background-color:#ededed;
+				-moz-border-radius:6px;
+				-webkit-border-radius:6px;
+				border-radius:6px;
+				border:1px solid #dcdcdc;
+				display:inline-block;
+				color:#777777;
+				font-family:arial;
+				font-size:15px;
+				font-weight:bold;
+				padding:6px 24px;
+				text-decoration:none;
+				text-shadow:1px 1px 0px #ffffff;
+			}.button:hover {
+				background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );
+				background:-moz-linear-gradient( center top, #dfdfdf 5%, #ededed 100% );
+				filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#ededed');
+				background-color:#dfdfdf;
+			}.button:active {
+				position:relative;
+				top:1px;
+			}
+
+
+			table { border-collapse: collapse;
+			font-family: Futura, Arial, sans-serif; }
+			.reveal th, td { padding: 1em; }
+			.reveal th, .reveal thead { background: #000; color: #fff; border: 1px solid #fff; }
+			/*.reveal tr:nth-child(odd) { background: #ccc; }*/
+			.reveal tr:hover { background: #aaa; }
+			.reveal td { border: 1px solid #777; }
+			.reveal th { font-size: 0.75em;}
+			.reveal td { font-size: 0.5em; font-weight: normal; padding: 1em;}
+			.reveal table { border: 1px solid #777; }
+
+		</style>
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			//document.write( '<link rel="stylesheet" href="reveal.js/css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+
+
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="reveal.js/lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+				<section>
+				<!-- add a flask and angularjs svg logo in here -->
+				    <object type="image/svg+xml" width="300" height="300" data="images/HTML5-Logo.svg"></object>
+
+					<h2>AngularJS and Flask sitting in a tree</h2>
+					<p>
+						<small><a href="http://mysticcoders.com">Andrew Lombardi</a> / <a href="http://twitter.com/kinabalu">@kinabalu</a></small>
+					</p>
+					<p>
+						<small><a href="http://mysticcoders.com">Mystic Coders, LLC</a></small>
+					</p>
+				</section>
+
+				<section>
+					<section>
+						<h2>About Me</h2>
+						<img src="images/me_and_jd.png" />
+					</section>
+					<section>
+						<h2>About Me</h2>
+						<p class="fragment">14 Years in Business</p>
+						<p class="fragment">Software Consultants</p>
+						<p class="fragment">International Speakers</p>
+						<p class="fragment">Training</p>
+						<p class="fragment">App Developer (Objective-C, Java, JavaScript, Python)</p>
+						<p>&nbsp;</p>
+						<p class="fragment"><strong>To our success!</strong></p>
+					</section>
+				</section>
+				<section fullscreen-img="images/skydiving.png" />
+				</section>	
+				<section fullscreen-img="images/rakia_63.png" />
+				</section>	
+				<section>			
+					<section>
+						<h2>History of "push" technology</h2>
+						<p>Adobe Flash&reg; Socket</p>
+						<p>HTTP Polling</p>
+						<p>AJAX long polling &amp; multipart-streaming</p>
+						<p>Forever Frame</p>
+						<p>JSONP Polling</p>
+						<aside class="notes">
+						Talk about the various technologies, forever frame, AJAX (go ms!), and the problems
+						with HTTP Long Polling on older browsers with the 2-connection per domain limit
+						</aside>
+					</section>
+					<section>
+						<h2>HTTP Polling</h2>
+						<p class="fragment">Browser sends HTTP requests at regular intervals</p>
+						<p class="fragment">Refreshes to the client are noisy</p>
+						<p class="fragment">Real-time data is not deterministic</p>
+						<aside class="notes">
+						With polling, the browser sends HTTP requests at regular intervals and immediately receives a response.  This technique was the first attempt for the browser to deliver real-time information. Obviously, this is a good solution if the exact interval of message delivery is known, because you can synchronize the client request to occur only when information is available on the server. However, real-time data is often not that predictable, making unnecessary requests inevitable and as a result, many connections are opened and closed needlessly in low-message-rate situations.
+						</aside>
+					</section>
+					<section>
+						<h2>HTTP Long Polling</h2>
+						<p class="fragment">Browser sends HTTP requests to server and request is kept open</p>
+						<p class="fragment">Could throttle out of control</p>
+						<aside class="notes">
+						With long-polling, the browser sends a request to the server and the server keeps the request open for a set period. If a notification is received within that period, a response containing the message is sent to the client. If a notification is not received within the set time period, the server sends a response to terminate the open request. It is important to understand, however, that when you have a high message volume, long-polling does not provide any substantial performance improvements over traditional polling.  In fact, it could be worse, because the long-polling might spin out of control into an unthrottled, continuous loop of immediate polls.
+						</aside>
+					</section>
+					<section>
+						<h2>Streaming</h2>
+						<p class="fragment">Browser sends complete request but server keeps open</p>
+						<p class="fragment">Response updated intermittently when new data arrives</p>
+						<p class="fragment">Firewalls and proxy servers may buffer causing latency</p>
+						<p class="fragment">HTTPS can be used but introduces additional resource cost</p>
+						<aside class="notes">
+						With streaming, the browser sends a complete request, but the server sends and maintains an open response that is continuously updated and kept open indefinitely (or for a set period of time). The response is then updated whenever a message is ready to be sent, but the server never signals to complete the response, thus keeping the connection open to deliver future messages. However, since streaming is still encapsulated in HTTP, intervening firewalls and proxy servers may choose to buffer the response, increasing the latency of the message delivery. Therefore, many streaming Comet solutions fall back to long-polling in case a buffering proxy server is detected. Alternatively, TLS (SSL) connections can be used to shield the response from being buffered, but in that case the setup and tear down of each connection taxes the available server resources more heavily.
+						</aside>
+					</section>
+					<section>
+						<h2>HTTP / REST call</h2>
+						<ul>
+							<li><strong>Use case A:</strong> 1,000 clients polling every second: Network throughput is (871 x 1,000) = 871,000 bytes = 6,968,000 bits per second (6.6 Mbps)</li>
+							<li><strong>Use case B:</strong> 10,000 clients polling every second: Network throughput is (871 x 10,000) = 8,710,000 bytes = 69,680,000 bits per second (66 Mbps)</li>
+							<li><strong>Use case C:</strong> 100,000 clients polling every 1 second: Network throughput is (871 x 100,000) = 87,100,000 bytes = 696,800,000 bits per second (665 Mbps)
+							</li>
+						</ul>
+						<p>&nbsp;</p>
+						<small>Source: <a href="http://www.websocket.org/quantum.html">http://www.websocket.org/quantum.html</a></small>
+					</section>
+					<section>
+						<h2>WebSocket call</h2>
+						<ul>
+							<li><strong>Use case A:</strong> 1,000 clients receive 1 message per second: Network throughput is (2 x 1,000) = 2,000 bytes = 16,000 bits per second (0.015 Mbps)</li>
+							<li><strong>Use case B:</strong> 10,000 clients receive 1 message per second: Network throughput is (2 x 10,000) = 20,000 bytes = 160,000 bits per second (0.153 Mbps)</li>
+							<li><strong>Use case C:</strong> 100,000 clients receive 1 message per second: Network throughput is (2 x 100,000) = 200,000 bytes = 1,600,000 bits per second (1.526 Mbps)
+							</li>
+						</ul>
+						<p>&nbsp;</p>
+						<small>Source: <a href="http://www.websocket.org/quantum.html">http://www.websocket.org/quantum.html</a></small>
+					</section>
+					<section>
+						<h2>Comparison Graph</h2>
+						<img src="images/poll-ws-compare.gif" />
+						<p>&nbsp;</p>
+						<small>Source: <a href="http://www.websocket.org/quantum.html">http://www.websocket.org/quantum.html</a></small>
+					</section>
+					<section>
+						<h2>Latency Comparison</h2>
+						<img src="images/latency-comparison.gif" />
+						<p>&nbsp;</p>
+						<small>Source: <a href="http://www.websocket.org/quantum.html">http://www.websocket.org/quantum.html</a></small>
+					</section>
+				</section>
+				<section>
+				    <object type="image/svg+xml" width="300" height="300" data="images/HTML5-Logo.svg"></object>
+
+					<p>
+						<strong>HTML5 WebSocket</strong> gives you a full-duplex communications channel that operates over <strong>HTTP</strong> through a single socket.
+					</p>
+				</section>
+				<section>
+				    <object type="image/svg+xml" width="300" height="300" data="images/nodejs_logo.svg"></object>
+
+					<h2>Standardizing on NodeJS</h2>
+					<p class="fragment">Single language</p>
+					<p class="fragment">Built in support for Websockets</p>
+					<p class="fragment">Client is JavaScript</p>
+				</section>
+				<section>
+					<h2>Installing NodeJS</h2>
+					<p><small>On Windows: <a href="http://nodejs.org/dist/latest/node.exe">http://nodejs.org/dist/latest/node.exe</a></small></p>
+					<p><small>On Mac OS X: <a href="http://nodejs.org/dist/latest/">http://nodejs.org/dist/latest/</a></small></p>
+					<p><small>On Linux: <a href="https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager">https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager</a></small></p>
+				</section>
+				<section>
+					<section>
+						<h2>Hello, World</h2>
+						<p>Fun fact:</p>
+						<blockquote>
+						The initial incarnation of everyones first application in a new language / technology was first written in Kernighan's 1972 A Tutorial Introduction to the Language B, and it was used to illustrate external variables in the language.
+						</blockquote>
+						<aside class="notes">
+						stuff
+						</aside>
+					</section>
+					<section>
+						<h2>Hello, World</h2>
+						<p>Let's take a look at the server</p>
+<pre><code>
+var WebSocketServer = require('ws').Server,
+    wss = new WebSocketServer({port: 8181});
+
+wss.on('connection', function(ws) {
+    ws.on('message', function(message) {
+		console.log(message);
+    });
+});
+</code></pre>
+					<p>Uses <a href="http://einaros.github.io/ws/">ws</a> nodejs library</p>
+					</section>
+					<section>
+					<h2>HTML5</h2>
+					<p>And the client HTML</p>
+<pre><code>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;WebSocket Echo Demo&lt;/title&gt;
+    &lt;script&gt;
+        var ws = new WebSocket(&quot;ws://localhost:8181&quot;);
+        ws.onopen = function(e) {
+          console.log('Connection to server opened');
+        }            
+
+        function sendMessage() {
+           ws.send(document.getElementById('message').value);
+        }
+    &lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;form onsubmit=&quot;sendMessage(); return false;&quot;&gt;
+        &lt;input type=&quot;text&quot; name=&quot;message&quot; style=&quot;width: 200px;&quot; id=&quot;message&quot; 
+          placeholder=&quot;Type text to echo in here&quot; value=&quot;&quot; autofocus/&gt;
+        &lt;input type=&quot;button&quot; value=&quot;Send!&quot; 
+          onclick=&quot;sendMessage();&quot; /&gt;
+  &lt;/form&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+					</section>
+					<section>
+						<h1>Developer Tools</h1>
+						<img src="images/chrome_client.png" />
+					</section>
+					<section>
+						<h1>Developer Tools</h1>
+						<p>Request Headers</p>
+<pre><code>
+GET ws://localhost:8181/ HTTP/1.1
+Pragma: no-cache
+Origin: null
+Host: localhost:8181
+Sec-WebSocket-Key: qalODNsUoRp+2K9FJty55Q==
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3)...
+Upgrade: websocket
+Sec-WebSocket-Extensions: x-webkit-deflate-frame
+Cache-Control: no-cache
+Connection: Upgrade
+Sec-WebSocket-Version: 13
+</code></pre>
+					</section>
+					<section>
+						<h1>Developer Tools</h1>
+						<p>Response Headers</p>
+<pre><code>
+HTTP/1.1 101 Switching Protocols
+Connection: Upgrade
+Sec-WebSocket-Accept: nambQ7W9imtAIYpzsw4hNNuGD58=
+Upgrade: websocket
+</code></pre>
+					<aside class="notes">
+					If response is working, then will get HTTP/1.1 101 Switching Protocols and a Conneciton: Upgrade
+					</aside>
+					</section>
+					<section>
+						<h1>Demo</h1>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>WebSocket API</h2>
+						<aside class="notes">
+						websocket stuff
+						</aside>
+					</section>
+					<section>
+						<h2>Intializing</h2>
+						<p>
+<pre><code>
+var ws = new WebSocket("ws://localhost:8181");
+</code></pre>
+						</p>
+					</section>
+					<section>
+						<h2>WebSocket Constructor</h2>
+						<table width="100%">
+						<thead>
+							<th>Parameter Name</th>
+							<th>Description</th>
+						</thead>
+						<tbody>
+							<tr><td>URL</td><td>URL as <strong>ws://</strong> or <strong>wss://</strong> (if using TLS)</td></tr>
+							<tr><td>protocol (optional)</td><td>parameter specifying sub-protocols that may be used as Array or single string</td></tr>
+						</tbody>
+						</table>
+					</section>
+					<section>
+						<h2>WebSocket Protocol</h2>
+						<p>Registered Protocols</p>
+						<small>
+						
+						In the spec for WebSocket RFC 6455, section 11.5 defines the Subprotocol Name Registry for IANA maintained registrations.
+						</small>
+						<p>Open Protocols</p>
+						<small>
+						In addition, you may use open protocols that are unregistered such as Extensible Messaging and Presence Protocol (XMPP) or Simple Text Oriented Message Protocol (STOMP), and various others.
+						</small>
+						<p>Custom</p>
+						<small>
+						You are free to design any protocol you like, as long as your server and client both support it. Recommended is to use names that contain the ASCII version of the domain name of the subprotocol’s originator. "chat.acme.com"
+						</small>
+					</section>
+					<section>
+						<h2>WebSocket Events - Open</h2>
+<pre><code>
+ws.onopen = function(e) {
+	console.log("Connection established");
+};
+</code></pre>
+						<aside class="notes">
+						open event happens post connection established and server-client handshake complete
+						</aside>
+					</section>
+					<section>
+						<h2>WebSocket Events - Message</h2>
+<pre><code>
+ws.onmessage = function(e) {
+    console.log("Message received: " + e.data);
+};
+</code></pre>
+						<aside class="notes">
+						Send/Receive messages via the "message" event handler
+						</aside>
+					</section>
+					<section>
+						<h2>WebSocket Events - Error</h2>
+<pre><code>
+ws.onerror = function(e) {
+    console.log("WebSocket failure, error", e);
+    handleErrors(e);
+};
+</code></pre>
+						<aside class="notes">
+						Any error will give a close event, Reconnect if warranted.
+						Check attributes code and reason
+						</aside>
+					</section>
+					<section>
+						<h2>WebSocket Events - Close</h2>
+<pre><code>
+ws.onclose = function(e) {
+        console.log("WebSocket connection closed", e);
+}
+</code></pre>
+						<aside class="notes">
+
+						</aside>
+					</section>
+					<section>
+						<h2>WebSocket Method - Send</h2>
+<pre><code>
+function processEvent(e) {
+    if(ws.readyState === WebSocket.OPEN) {
+        // Socket open, send!
+        ws.send(e);
+    } else {
+        // Show an error, queue it for sending later, etc
+    }
+}</code></pre>
+						<p>readyState can be interrogated to ensure open connection before sending</p>
+						<aside class="notes">
+
+						</aside>
+					</section>
+					<section>
+						<h2>WebSocket.readyState</h2>
+						<table width="100%">
+						<thead>
+							<th>Name</th>
+							<th>Value</th>
+							<th>Description</th>
+						</thead>
+						<tbody>
+							<tr><td>WebSocket.CONNECTING</td><td>0</td><td>Connection not yet established</td></tr>
+							<tr><td>WebSocket.OPEN</td><td>1</td><td>Connection is established and ready for messages</td></tr>
+							<tr><td>WebSocket.CLOSING</td><td>2</td><td>Connection is closing handshake</td></tr>
+							<tr><td>WebSocket.CLOSED</td><td>3</td><td>Connection has been closed or could not be opened</td></tr>
+						</tbody>
+						</table>
+					</section>
+					<section>
+						<h2>WebSocket.bufferedAmount</h2>
+						<p>The readonly attribute <code>bufferedAmount</code> represents the number of bytes of UTF-8 text that have been queued using <code>send()</code> method.</p>
+						<aside class="notes">
+						useful for large blocks of data being sent over the wire
+						</aside>
+					</section>
+					<section>
+						<h2>WebSocket.protocol</h2>
+						<p>Optional argument allows you to request via the client one or many sub-protocols.</p>
+						<p>Server ultimately decides the protocol to choose during handshake</p>
+						<aside class="notes">
+						Server decides which protocol to use when it sends the handshake back
+						</aside>
+					</section>
+					<section>
+						<h2>WebSocket Method - Close</h2>
+<pre><code>
+ws.close(1000, "Goodbye, World!");
+</code></pre>
+						<p>Optional offer <em>code</em> and <em>reason</em></p>
+						<aside class="notes">
+						can be empty of parameters, or pass code and reason optionally
+						</aside>
+					</section>
+					<section>
+						<h2>Checking browser support</h2>
+<pre><code>
+if (window.WebSocket) {
+    console.log("WebSocket: supported");
+    // ... code here for doing WebSocket stuff
+} else {
+    console.log("WebSocket: unsupported");
+    // ... fallback mode, or error back to user
+}
+</code></pre>
+					</section>
+				</section>
+				<section>
+					<h1>Demo</h1>
+				</section>
+				<section>
+					<section>
+						<h2>Browser Support</h2>
+						<table width="100%">
+						<thead>
+							<th>Browser</th>
+							<th>Minimum Version</th>
+						</thead>
+						<tbody>
+							<tr><td>Firefox</td><td>6.0</td></tr>
+							<tr><td>Chrome</td><td>14.0+</td></tr>
+							<tr><td>Safari</td><td>6.0+</td></tr>
+							<tr><td>Opera</td><td>12.1+</td></tr>
+							<tr><td>iOS Safari</td><td>6.0+</td></tr>
+							<tr><td>Android</td><td>4.4+</td></tr>
+						</tbody>
+						</table>					
+						<aside class="notes">
+						</aside>
+					</section>
+					<section>
+						<h2>Internet Explorer 10</h2>
+					    <object type="image/svg+xml" width="300" height="300" data="images/Internet_Explorer_10_logo.svg"></object>
+					</section>
+					<section>
+						<h2>Socket.IO</h2>
+						<p>
+						Socket.IO wraps a JavaScript API to allow for different transport mechanisms based on browser support.  It provides heartbeats, channels, disconnection notifications and various other things not provided by the WebSocket API.
+						</p>
+					</section>
+					<section>
+						<h2>SockJS</h2>
+						<p><a href="https://github.com/sockjs‎">SockJS</a>a> is a browser JavaScript library that provides a WebSocket-like object. SockJS gives you a coherent, cross-browser, Javascript API which creates a low latency, full duplex, cross-domain communication channel between the browser and the web server.</p>
+					</section>
+					<section>
+						<h2>web-socket-js</h2>
+						<p><a href="https://github.com/gimite/web-socket-js">web-socket-js</a> is a WebSocket implementation powered by Flash.</p>
+					</section>
+				</section>
+				<section>
+					<h2>Alternatives to Websockets</h2>
+					<p class="fragment"><a href="http://socket.io">Socket.IO</a></p>
+					<p class="fragment"><a href="http://www.pusher.com">Pusher</a></p>
+					<p class="fragment"><a href="https://github.com/stevegraham/slanger">Slanger</a></p>
+					<p class="fragment"><a href="https://github.com/thunderpush/thunderpush">ThunderPush</a></p>
+					<p class="fragment"><a href="https://github.com/Atmosphere/atmosphere">Atmosphere</a></p>
+					<p class="fragment">And many more...</p>
+				</section>
+				<section>
+					<h2>Helpful Links</h2>
+					<p><a href="http://www.html5rocks.com/en/tutorials/websockets/basics/">HTML5 Rocks</a></p>
+					<p><a href="http://www.websocket.org">WebSocket.org</a></p>
+					<p><a href="https://github.com/gimite/web-socket-js">web-socket-js</a></p>
+					<p><a href="http://socket.io">socket.io</a></p>
+					<p><a href="http://tools.ietf.org/html/rfc6455‎">WebSocket RFC 6455</a></p>
+				</section>
+				<section>
+					<h2>New WebSocket book</h2>
+					<img src="images/WebSocket_comp.png" />
+				</section>
+
+				<section>
+					<h1>Q &amp; A</h1>
+					<h3>Andrew Lombardi / <a href="http://www.twitter.com/kinabalu">@kinabalu</a></h3>
+					<p>
+						kinabalu @ <a href="irc://irc.freenode.net">irc://irc.freenode.net</a>
+					</p>
+					<p>
+						<small>#javascript</small>
+					</p>
+					<p>
+						<small><a href="https://github.com/kinabalu/real_time_with_websockets">https://github.com/kinabalu/real_time_with_websockets</a></small>
+					</p>
+
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="reveal.js/lib/js/head.min.js"></script>
+		<script src="reveal.js/js/reveal.min.js"></script>
+		<script src="js/underscore-min.js"></script>
+		<script>
+
+			Reveal.addEventListener( 'slidechanged', function( event ) {
+			    // event.previousSlide, event.currentSlide, event.indexh, event.indexv
+
+				_.each(iframe_sections, function(id_name) {
+					name = id_name['name'];
+					url = id_name['url'];
+
+				    if(event.previousSlide && event.previousSlide.getAttribute('id')==name) {
+				    	document.getElementById(name+'_iframe').parentNode.removeChild(document.getElementById(name+'_iframe'));
+					}
+
+					if(event.currentSlide.getAttribute('id')==name) {
+						var iframe = document.createElement("iframe");
+						iframe.src = url;
+						iframe.id = name+'_iframe';
+						iframe.width = '100%';
+						iframe.height = '100%';
+						document.getElementById(name).appendChild(iframe);					
+					}
+				});
+			} );			
+			Reveal.addEventListener( 'overviewshown', function( event ) { 
+			} );
+		</script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'reveal.js/plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'reveal.js-fullscreen-img/fullscreen-img.js' }
+					//{ src: 'reveal.js/plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+			/*
+			var canvas = document.getElementById('mystic_logo');
+			if (canvas.getContext) {
+				alert('canvas');
+				var context = canvas.getContext('2d');
+
+				var myImage = new Image();
+				myImage.onload = function() {
+				  canvas.setAttribute('width', myImage.width);
+				  canvas.setAttribute('height', myImage.height);
+				  context.drawImage(myImage, 0, 0);
+		          }
+			}
+			myImage.src = "images/mystic-logo-contracts.png";
+			*/
+		</script>
+
+	</body>
+</html>

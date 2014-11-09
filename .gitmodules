@@ -1,0 +1,6 @@
+[submodule "reveal.js"]
+        path = reveal.js
+        url = https://github.com/hakimel/reveal.js.git
+[submodule "reveal.js-fullscreen-img"]
+        path = reveal.js-fullscreen-img
+        url = https://github.com/regisb/reveal.js-fullscreen-img.git
