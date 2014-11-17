@@ -1,0 +1,54 @@
+<div class="modal-header">
+  <h1>{{ modalHeaderText }}</h1>
+</div>
+<div class="modal-body">
+<form name="top5Form" ng-submit="save(top5Form.$valid)" novalidate>
+    <div class="form-group" data-ng-class="{ 'has-error' : top5Form.unit.$invalid && !top5Form.unit.$pristine }">
+      <label for="name">Unit</label>
+      <input type="text" name="unit" data-ng-model="item.unit" class="form-control" required />
+      <p data-ng-show="top5Form.unit.$invalid && !top5Form.unit.$pristine" class="help-block">Unit is required.</p>
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : top5Form.lease_name.$invalid && !top5Form.lease_name.$pristine }">
+      <label for="lease_name">Lease Name</label>
+      <input type="text" name="lease_name" data-ng-model="item.lease_name" class="form-control" required />
+      <p data-ng-show="top5Form.lease_name.$invalid && !top5Form.lease_name.$pristine" class="help-block">Lease name is required.</p>
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : top5Form.lease_from.$invalid && !top5Form.lease_from.$pristine }">
+      <label for="lease_from">Lease From</label>
+      <input type="date" name="lease_from" data-ng-model="item.lease_from" class="form-control" required />
+      <p data-ng-show="top5Form.lease_from.$invalid && !top5Form.lease_from.$pristine" class="help-block">Lease from is required.</p>
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : top5Form.lease_to.$invalid && !top5Form.lease_to.$pristine }">
+      <label for="lease_to">Lease To</label>
+      <input type="date" name="lease_to" data-ng-model="item.lease_to" class="form-control" required />
+      <p data-ng-show="top5Form.lease_to.$invalid && !top5Form.lease_to.$pristine" class="help-block">Lease to is required.</p>
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : top5Form.area.$invalid && !top5Form.area.$pristine }">
+      <label for="area">Area</label>
+      <input type="text" name="area" data-ng-model="item.area" class="form-control" required />
+      <p data-ng-show="top5Form.area.$invalid && !top5Form.area.$pristine" class="help-block">Area is required.</p>
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : top5Form.percent_of_total_area.$invalid && !top5Form.percent_of_total_area.$pristine }">
+      <label for="percent_of_total_area">% of Total Area</label>
+      <input type="text" name="percent_of_total_area" data-ng-model="item.percent_of_total_area" class="form-control" required />
+      <p data-ng-show="top5Form.percent_of_total_area.$invalid && !top5Form.percent_of_total_area.$pristine" class="help-block">% of Total Area is required.</p>
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : top5Form.base_rent.$invalid && !top5Form.base_rent.$pristine }">
+      <label for="base_rent">Base Rent</label>
+      <input type="text" name="base_rent" data-ng-model="item.base_rent" class="form-control" required />
+      <p data-ng-show="top5Form.base_rent.$invalid && !top5Form.base_rent.$pristine" class="help-block">Base Rent is required.</p>
+    </div>
+
+</div>
+<div class="modal-footer">
+    <button type="submit" class="btn btn-primary" data-ng-disabled="top5Form.$invalid" ng-click="save(top5Form.$valid)">Save</button>
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+</div>
+</form>
+</div>

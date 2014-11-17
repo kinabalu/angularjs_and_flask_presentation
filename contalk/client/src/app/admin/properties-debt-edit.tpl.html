@@ -1,0 +1,66 @@
+  <h3 class="page-header">
+    {{ headerText }}
+    <small>- <a ui-sref="adminproperty.overview({ propertyID: id })">Return to overview</a></small>
+  </h3>
+
+  <p>
+  <form name="debtForm" ng-submit="save(debtForm.$valid)" novalidate>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : debtForm.lender.$invalid && !debtForm.lender.$pristine }">
+      <label for="lender">Lender</label>
+      <input type="text" name="lender" data-ng-model="property.debt.lender" class="form-control" required />
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : debtForm.initial_ltv.$invalid && !debtForm.initial_ltv.$pristine }">
+      <label for="initial_ltv">Initial LTV</label>
+      <input type="text" name="initial_ltv" data-ng-model="property.debt.initial_ltv" class="form-control" required />
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : debtForm.initial_amount.$invalid && !debtForm.initial_amount.$pristine }">
+      <label for="initial_amount">Loan amount (initial)</label>
+      <input type="text" name="initial_amount" data-ng-model="property.debt.initial_amount" class="form-control" required />
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : debtForm.loan_amount_psf.$invalid && !debtForm.loan_amount_psf.$pristine }">
+      <label for="loan_amount_psf">Loan amount PSF</label>
+      <input type="text" name="loan_amount_psf" data-ng-model="property.debt.loan_amount_psf" class="form-control" required />
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : debtForm.reserve_remaining.$invalid && !debtForm.reserve_remaining.$pristine }">
+      <label for="reserve_remaining">Reserve remaining</label>
+      <input type="text" name="reserve_remaining" data-ng-model="property.debt.reserve_remaining" class="form-control" required />
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : debtForm.term.$invalid && !debtForm.term.$pristine }">
+      <label for="term">Term</label>
+      <input type="text" name="term" data-ng-model="property.debt.term" class="form-control" required />
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : debtForm.initial_expiration.$invalid && !debtForm.initial_expiration.$pristine }">
+      <label for="initial_expiration">Initial Expiration</label>
+      <input type="text" name="initial_expiration" data-ng-model="property.debt.initial_expiration" class="form-control" required />
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : debtForm.rate.$invalid && !debtForm.rate.$pristine }">
+      <label for="rate">Rate</label>
+      <input type="text" name="rate" data-ng-model="property.debt.rate" class="form-control" required />
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : debtForm.prepayment.$invalid && !debtForm.prepayment.$pristine }">
+      <label for="prepayment">Prepayment</label>
+      <input type="text" name="prepayment" data-ng-model="property.debt.prepayment" class="form-control" required />
+    </div>
+
+
+    <div class="form-group" data-ng-class="{ 'has-error' : debtForm.io_term.$invalid && !debtForm.io_term.$pristine }">
+      <label for="io_term">I/O Term</label>
+      <input type="text" name="io_term" data-ng-model="property.debt.io_term" class="form-control" required />
+    </div>
+
+    <div class="form-group pull-right">
+
+    <button ui-sref="adminproperty.overview({ propertyID: id })" class="btn btn-danger">Cancel</button>
+    <button type="submit" data-ng-click="save(debtForm.$valid)" data-ng-disabled="debtForm.$invalid" class="btn btn-success">Update</button>
+    </div>
+    <div class="clearfix"></div>
+  </p>

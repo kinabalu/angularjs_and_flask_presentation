@@ -1,0 +1,51 @@
+<div class="modal-header">
+  <h1>{{ modalHeaderText}}</h1>
+</div>
+<div class="modal-body">
+<form name="expirationForm" ng-submit="save(expirationForm.$valid)" novalidate>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : expirationForm.suite.$invalid && !expirationForm.suite.$pristine }">
+      <label for="suite">Suite</label>
+      <input type="text" name="suite" data-ng-model="item.suite" class="form-control" required />
+      <p data-ng-show="expirationForm.suite.$invalid && !expirationForm.suite.$pristine" class="help-block">Suite is required.</p>
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : expirationForm.tenant.$invalid && !expirationForm.tenant.$pristine }">
+      <label for="tenant">Tenant</label>
+      <input type="text" name="tenant" data-ng-model="item.tenant" class="form-control" required />
+      <p data-ng-show="expirationForm.tenant.$invalid && !expirationForm.tenant.$pristine" class="help-block">Tenant is required.</p>
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : expirationForm.term_from.$invalid && !expirationForm.term_from.$pristine }">
+      <label for="term_from">Term From</label>
+      <input type="date" name="term_from" data-ng-model="item.term_from" class="form-control" />
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : expirationForm.term_to.$invalid && !expirationForm.term_to.$pristine }">
+      <label for="term_to">Term To</label>
+      <input type="date" name="term_to" data-ng-model="item.term_to" class="form-control" />
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : expirationForm.sf.$invalid && !expirationForm.sf.$pristine }">
+      <label for="sf">SF</label>
+      <input type="number" name="sf" data-ng-model="item.sf" class="form-control" required />
+      <p data-ng-show="expirationForm.sf.$invalid && !expirationForm.sf.$pristine" class="help-block">SF is required.</p>
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : expirationForm.price_sf_annual.$invalid && !expirationForm.price_sf_annual.$pristine }">
+      <label for="price_sf_annual">$/SF Annual</label>
+      <input type="text" name="price_sf_annual" data-ng-model="item.price_sf_annual" class="form-control" required />
+      <p data-ng-show="expirationForm.price_sf_annual.$invalid && !expirationForm.price_sf_annual.$pristine" class="help-block">$/SF Annual is required.</p>
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : expirationForm.price_sf_monthly.$invalid && !expirationForm.price_sf_monthly.$pristine }">
+      <label for="price_sf_monthly">$/SF Monthly</label>
+      <input type="text" name="price_sf_monthly" data-ng-model="item.price_sf_monthly" class="form-control" required />
+      <p data-ng-show="expirationForm.price_sf_monthly.$invalid && !expirationForm.price_sf_monthly.$pristine" class="help-block">$/SF Monthly is required.</p>
+    </div>
+
+</div>
+<div class="modal-footer">
+    <button type="submit" class="btn btn-primary" data-ng-disabled="expirationForm.$invalid" ng-click="save(expirationForm.$valid)">Save</button>
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+</div>

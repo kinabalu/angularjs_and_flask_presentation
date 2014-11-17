@@ -1,0 +1,78 @@
+<div class="modal-header">
+  <h1>{{ modalHeaderText }}</h1>
+</div>
+<div class="modal-body">
+<form name="leasingForm" ng-submit="save(leasingForm.$valid)" novalidate>
+    <div class="form-group" data-ng-class="{ 'has-error' : leasingForm.tenant.$invalid && !leasingForm.tenant.$pristine }">
+      <label for="name">Tenant</label>
+      <input type="text" name="tenant" data-ng-model="item.tenant" class="form-control" required />
+      <p data-ng-show="leasingForm.tenant.$invalid && !leasingForm.tenant.$pristine" class="help-block">Tenant name is required.</p>
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : leasingForm.suite.$invalid && !leasingForm.suite.$pristine }">
+      <label for="suite">Suite</label>
+      <input type="text" name="suite" data-ng-model="item.suite" class="form-control" required />
+      <p data-ng-show="leasingForm.suite.$invalid && !leasingForm.suite.$pristine" class="help-block">Suite info is required.</p>
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : leasingForm.lease_type.$invalid && !leasingForm.lease_type.$pristine }">
+      <label for="lease_type">Lease Type</label>
+      <input type="text" name="lease_type" data-ng-model="item.lease_type" class="form-control" required />
+      <p data-ng-show="leasingForm.lease_type.$invalid && !leasingForm.lease_type.$pristine" class="help-block">Lease type is required.</p>
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : leasingForm.rentable_sf.$invalid && !leasingForm.rentable_sf.$pristine }">
+      <label for="rentable_sf">Rentable SF</label>
+      <input type="text" name="rentable_sf" data-ng-model="item.rentable_sf" class="form-control" required />
+      <p data-ng-show="leasingForm.rentable_sf.$invalid && !leasingForm.rentable_sf.$pristine" class="help-block">Rentable SF is required.</p>
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : leasingForm.start.$invalid && !leasingForm.start.$pristine }">
+      <label for="start">Start</label>
+      <input type="date" name="start" data-ng-model="item.start" class="form-control" required />
+      <p data-ng-show="leasingForm.start.$invalid && !leasingForm.start.$pristine" class="help-block">Start date is required.</p>
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : leasingForm.expire.$invalid && !leasingForm.expire.$pristine }">
+      <label for="expire">Expire</label>
+      <input type="date" name="expire" data-ng-model="item.expire" class="form-control" required />
+      <p data-ng-show="leasingForm.expire.$invalid && !leasingForm.expire.$pristine" class="help-block">Expire date is required.</p>
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : leasingForm.price_rsf.$invalid && !leasingForm.price_rsf.$pristine }">
+      <label for="price_rsf">$/RSF</label>
+      <input type="text" name="price_rsf" data-ng-model="item.price_rsf" class="form-control" required />
+      <p data-ng-show="leasingForm.price_rsf.$invalid && !leasingForm.price_rsf.$pristine" class="help-block">$/RSF is required.</p>
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : leasingForm.rent_abatement_mos.$invalid && !leasingForm.rent_abatement_mos.$pristine }">
+      <label for="rent_abatement_mos">Rent Abatement (Mos)</label>
+      <input type="text" name="rent_abatement_mos" data-ng-model="item.rent_abatement_mos" class="form-control" required />
+      <p data-ng-show="leasingForm.rent_abatement_mos.$invalid && !leasingForm.rent_abatement_mos.$pristine" class="help-block">Rent abatement is required.</p>
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : leasingForm.annual_rent_bump.$invalid && !leasingForm.annual_rent_bump.$pristine }">
+      <label for="annual_rent_bumps">Annual Rent Bumps</label>
+      <input type="text" name="annual_rent_bumps" data-ng-model="item.annual_rent_bumps" class="form-control" required />
+      <p data-ng-show="leasingForm.annual_rent_bump.$invalid && !leasingForm.annual_rent_bump.$pristine" class="help-block">Annual rent bump is required.</p>
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : leasingForm.tis.$invalid && !leasingForm.tis.$pristine }">
+      <label for="tis">TIs</label>
+      <input type="text" name="tis" data-ng-model="item.tis" class="form-control" required />
+      <p data-ng-show="leasingForm.tis.$invalid && !leasingForm.tis.$pristine" class="help-block">TIs is required.</p>
+    </div>
+
+    <div class="form-group" data-ng-class="{ 'has-error' : leasingForm.lcs.$invalid && !leasingForm.lcs.$pristine }">
+      <label for="lcs">LCs</label>
+      <input type="text" name="lcs" data-ng-model="item.lcs" class="form-control" required />
+      <p data-ng-show="leasingForm.lcs.$invalid && !leasingForm.lcs.$pristine" class="help-block">LCs is required.</p>
+    </div>
+
+</div>
+<div class="modal-footer">
+    <button type="submit" class="btn btn-primary" data-ng-disabled="leasingForm.$invalid" ng-click="save(leasingForm.$valid)">Save</button>
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+</div>
+</form>
+</div>

@@ -1,0 +1,59 @@
+<alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+
+<h1 class="page-header">
+  Properties
+</h1>
+<p>
+
+<div class="row">
+    <div class="col-md-12">
+        <button ui-sref="create-property" class="btn btn-primary">Add Property</button>
+    </div>
+</div>
+<div class="row">
+<table class="table">
+<thead>
+<tr>
+  <th></th>
+  <th>
+    Name
+  </th>
+  <th>
+    Address
+  </th>
+  <th>
+    Square Footage
+  </th>
+  <th>
+    Actions
+  </th>
+</tr>
+</thead>
+<tbody>
+  <tr>
+    <td ng-hide="properties.length" colspan="3">
+      No properties found
+    </td>
+  </tr>
+  <tr ng-show="properties.length" ng-repeat="prop in properties">
+    <td>
+        <img class="img-polaroid" ph-img="75x75" />
+    </td>
+    <td>
+    <a ui-sref="adminproperty.overview({ propertyID: prop.id })">{{ prop.name }}</a>
+    </td>
+    <td>
+    {{ prop.address }}
+    </td>
+    <td>
+    {{ prop.square_footage | number }}
+    </td>     
+    <td>
+      <button class="btn btn-danger" data-ng-click="remove(prop)" onclick="return confirm('Are you sure you want to delete this property?');">Delete</button>
+    </td>
+  </tr> 
+</tbody>
+</table>
+
+</div>
+</p>

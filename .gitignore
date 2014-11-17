@@ -1,2 +1,9 @@
 .DS_Store
 node_modules
+*.sw*
+*~
+build/
+bin/
+vendor/
+.DS_Store
+db-*.json

@@ -1,0 +1,28 @@
+{
+  "talks": [
+    {
+      "id": 1,
+      "name": "AngularJS and Flask sitting in a tree",
+      "speaker": "Andrew Lombardi",
+      "technology": ["JavaScript", "Python"],
+      "description": "An awesome talk about the JavaScript framework AngularJS and using it with Flask to build a RESTful service",
+      "time": {
+        "begin_time": "14:25",
+        "end_time": "15:10"
+      },
+      "date": "2014-11-18"
+    },
+    {
+      "id": 2,
+      "name": "Simple API's with bottle.py",
+      "speaker": "Andrew Lombardi",
+      "technology": ["Python"],
+      "description": "An awesome talk",
+      "time": {
+        "begin_time": "14:25",
+        "end_time": "15:10"
+      },
+      "date": "2014-11-19"
+    }
+  ]
+}

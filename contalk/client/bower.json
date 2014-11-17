@@ -1,0 +1,17 @@
+{
+  "name": "swiftrp",
+  "version": "0.3.2",
+  "devDependencies": {
+    "angular": "~1.2",
+    "angular-mocks": "~1.2",
+    "bootstrap": "~3.1",
+    "angular-bootstrap": "~0.10.0",
+    "angular-ui-router": "~0.2",
+    "ng-table": "~0.3.3",
+    "restangular": "~1.4.0",
+    "momentjs": "~2.8.3"
+  },
+  "dependencies": {
+    "mobile-angular-ui": "~1.1.0-beta.30"
+  }
+}

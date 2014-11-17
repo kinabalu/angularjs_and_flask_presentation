@@ -1,0 +1,26 @@
+  <h1 class="page-header">
+    My Profile
+  </h1>
+
+  <p>
+
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" name="name" data-ng-model="profile.name" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+      <label for="email">E-mail</label>
+      <input type="text" name="email" data-ng-model="profile.email" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" name="email" data-ng-model="profile.password" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+    <button data-ng-click="submit()" class="btn btn-default">Update</button>
+    <button ui-sref="home" class="btn btn-danger">Cancel</button>
+    </div>
+  </p>
