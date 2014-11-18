@@ -65,6 +65,7 @@
 			.reveal td { font-size: 0.5em; font-weight: normal; padding: 1em;}
 			.reveal table { border: 1px solid #777; }
 
+            .reveal .noborder { border: none; }
 		</style>
 
 		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
@@ -87,9 +88,8 @@
 			<div class="slides">
 
 				<section>
-				<!-- add a flask and angularjs svg logo in here -->
-				    <object type="image/svg+xml" width="300" height="300" data="images/HTML5-Logo.svg"></object>
-
+                    <img src="images/logos/angularjs.png" class="noborder"/>
+                    <img src="images/logos/flask.png" width="383" class="noborder"/>
 					<h2>AngularJS and Flask sitting in a tree</h2>
 					<p>
 						<small><a href="http://mysticcoders.com">Andrew Lombardi</a> / <a href="http://twitter.com/kinabalu">@kinabalu</a></small>
@@ -115,23 +115,25 @@
 						<p class="fragment"><strong>To our success!</strong></p>
 					</section>
 				</section>                
-				<section fullscreen-img="images/rakia_63.png" />
+				<section fullscreen-img="images/rakia_63.png">
+                    <h1 class="fragment">pian kato svinia</h1>
 					<aside class="notes">
 						Known side effects: 
 						- You may start to sing. 
 						- You can't find your way home. 
 						- It's possible you may forget your name and/or get lost in your own home. 
-						- If you drink more than 1 liter you may collapse. The bulgarian term for this condition is "Ïèÿí íà ñâèíÿ" (transcription "Pian na svinia", meaning "Drunk like a pig").
-						...oh, rakiq,oh holy martyr... (quote from a bulgarian rakia-dedicated song... actually most of the bulgarian popular music (a.k.a. chalga) is dedicated and/or result of this powerfull brew...)
+						- "pian kato svinia" - more than 1 liter - "drunk like a pig"
 					</aside>				
 				</section>
+                <section fullscreen-img="images/shopska-salad.jpg">
+                </section>
                 <section>
                     <h2>What we'll cover</h2>
                     <ul>
-                        <li class="fragment">Installing Flask</li>
-                        <li class="fragment">Writing RESTful API</li>
-                        <li class="fragment">Kickstarting AngularJS</li>
-                        <li class="fragment">Modules, Controllers, Services, and templates</li>
+                        <li>Installing Flask</li>
+                        <li>Writing RESTful API</li>
+                        <li>Kickstarting AngularJS</li>
+                        <li>Modules, Routes, Controllers, Services, and templates</li>
                     </ul>
                 </section>
                 <section>
@@ -159,7 +161,8 @@
                     <h2>Configuring virtualenv for example</h2>
 <pre><code class="bash">$ virtualenv contalk
 $ source contalk/bin/activate
-$ pip install -U Flask</code></pre>
+$ pip install -U Flask
+$ pip install -U Flask-RESTful</code></pre>
                     </section>
                     <section>
                         <h2>requirements.txt</h2>
@@ -188,6 +191,15 @@ Flask-RESTful==0.2.12
                         </aside>
                     </section>
                 </section>
+                <section>
+                    <h2>What we've covered</h2>
+                    <ul>
+                        <li><s>Installing Flask</s></li>
+                        <li>Writing RESTful API</li>
+                        <li>Kickstarting AngularJS</li>
+                        <li>Modules, Routes, Controllers, Services, and templates</li>
+                    </ul>
+                </section>                
                 <section>
                     <h2>Hello World example</h2>
 <pre><code class="python">
@@ -263,14 +275,16 @@ if __name__ == '__main__':
                     </section>
                     <section>
                         <h2>Flask-Restful</h2>
-                        <p>Lightweight abstraction for building a REST api</p>
-                        <p>We're using a simple in-memory var <code>talks</code></p>
-                        <p>Can integrate with any data source, SQLAlchemy, MongoEngine, etc</p>
+                        <ul>
+                            <li>Lightweight abstraction for building a REST api</li>
+                            <li>We're using a simple in-memory var <code>talks</code></li>
+                            <li>Can integrate with any data source, SQLAlchemy, MongoEngine, etc</li>
+                        </ul>
                     </section>
                     <section>
                         <h2>Testing GET talks list</h2>   
 <pre><code class="bash">
-curl -i -X GET http://localhost:5000/api/talks
+$ curl -i -X GET http://localhost:5000/api/talks
 HTTP/1.0 200 OK
 Content-Type: application/json
 Content-Length: 727
@@ -538,6 +552,15 @@ if __name__ == '__main__':
                     </aside>
                 </section>
                 <section>
+                    <h2>What we've covered</h2>
+                    <ul>
+                        <li><s>Installing Flask</s></li>
+                        <li><s>Writing RESTful API</s></li>
+                        <li>Kickstarting AngularJS</li>
+                        <li>Modules, Routes, Controllers, Services, and templates</li>
+                    </ul>
+                </section>                                
+                <section>
                     <h2>Why AngularJS?</h2>
                     <ul>
                         <li class="fragment">Extends the DOM -- designer friendly</li>
@@ -616,6 +639,15 @@ ng-boilerplate/
   |- package.json
 </code></pre>
                     </section>                        
+                </section>
+                <section>
+                    <h2>What we've covered</h2>
+                    <ul>
+                        <li><s>Installing Flask</s></li>
+                        <li><s>Writing RESTful API</s></li>
+                        <li><s>Kickstarting AngularJS</s></li>
+                        <li>Modules, Routes, Controllers, Services, and templates</li>
+                    </ul>
                 </section>
                 <section>
                     <section>
@@ -893,7 +925,16 @@ var talks = Restangular.all("talks").getList();
                 </section>       
                 <section>
                     <h2>DEMO</h2>
-                </section>         
+                </section>
+                <section>
+                    <h2>What we've covered</h2>
+                    <ul>
+                        <li><s>Installing Flask</s></li>
+                        <li><s>Writing RESTful API</s></li>
+                        <li><s>Kickstarting AngularJS</s></li>
+                        <li><s>Modules, Routes, Controllers, Services, and templates</s></li>
+                    </ul>
+                </section>                         
                 <section>
                     <h2>AngularJS 2</h2>
                     <p>And now, forget everything.</p>
