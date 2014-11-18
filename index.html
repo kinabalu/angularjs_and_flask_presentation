@@ -167,6 +167,7 @@ $ pip install -U Flask</code></pre>
 $ pip freeze > requirements.txt
 $ cat requirements.txt
 Flask==0.10.1
+Flask-RESTful==0.2.12
 </code></pre>
                     </section>
                     <section>
@@ -213,7 +214,7 @@ if __name__ == '__main__':
                     <section>
                         <h2>Sample JSON Data</h2>
 <pre><code class="json">
-{
+[{
   "id": 1,
   "name": "AngularJS and Flask sitting in a tree",
   "speaker": "Andrew Lombardi",
@@ -236,7 +237,7 @@ if __name__ == '__main__':
     "end_time": "15:10"
   },
   "date": "2014-11-19"
-}
+}]
 </code></pre>
                     </section>                        
                     <section>
@@ -261,8 +262,10 @@ if __name__ == '__main__':
 </code></pre>
                     </section>
                     <section>
-                        <h2>Flask-Restful using flat file</h2>
-                        <p>No DB needed!</p>
+                        <h2>Flask-Restful</h2>
+                        <p>Lightweight abstraction for building a REST api</p>
+                        <p>We're using a simple in-memory var <code>talks</code></p>
+                        <p>Can integrate with any data source, SQLAlchemy, MongoEngine, etc</p>
                     </section>
                     <section>
                         <h2>Testing GET talks list</h2>   
@@ -782,6 +785,7 @@ var talks = Restangular.all("talks").getList();
                     </section>
                     <section>
                         <h2>View Talk Template</h2>
+                        <p><code>talks-view.tpl.html</code></p>
 <pre><code class="html"><h1 class="page-header">
     {{ headerText }}
     <small>- <a ui-sref="talks({ talkID: talk.id })">Return to overview</a></small>
@@ -836,6 +840,7 @@ var talks = Restangular.all("talks").getList();
                     </section>
                     <section>
                         <h2>Edit/Add Talk Template</h2>
+                        <p><code>talks-edit.tpl.html</code></p>
 <pre><code class="html">
 <form name="talkForm" ng-submit="save(talkForm.$valid)" novalidate>
     <div class="form-group" data-ng-class="{ 'has-error' : talkForm.name.$invalid && !talkForm.name.$pristine }">
@@ -892,6 +897,11 @@ var talks = Restangular.all("talks").getList();
                 <section>
                     <h2>AngularJS 2</h2>
                     <p>And now, forget everything.</p>
+                    <aside class="notes">
+                    * Removes the idea of: Controllers, Directive Definition Object, $scope, angular.module, jqLite
+                    * new template engine
+                    * AtScript: superset of TypeScript 
+                    </aside>
                 </section>
 				<section>
 					<h2>Helpful Links</h2>
