@@ -129,9 +129,9 @@
                     <h2>What we'll cover</h2>
                     <ul>
                         <li class="fragment">Installing Flask</li>
-                        <li class="fragment"></li>
-                        <li class="fragment"></li>
-                        <li class="fragment"></li>
+                        <li class="fragment">Writing RESTful API</li>
+                        <li class="fragment">Kickstarting AngularJS</li>
+                        <li class="fragment">Modules, Controllers, Services, and templates</li>
                     </ul>
                 </section>
                 <section>
@@ -295,9 +295,11 @@ def post(self):
     return jsonify({"id": json_data['id']})
 </code></pre>                        
                     </section>
+                    <!--
                     <section>
                         <h2>curl -X POST</h2>
                     </section>
+                    -->
                     <section>
                         <h2>What about PUT, PATCH, and DELETE?</h2>
                         <p>With <a href="http://flask-restful.readthedocs.org">Flask-Restful</a> if we don't define functions for handling HTTP methods, it
@@ -317,20 +319,20 @@ def post(self):
                         </thead>
                         <tbody>
                         <tr>
-                            <td>getStocks</td>
-                            <td>GET /stocks</td>
+                            <td>getTalks</td>
+                            <td>GET /talks</td>
                         </tr>
                         <tr>
-                            <td>addStock</td>
-                            <td>POST /stocks</td>
+                            <td>addTalk</td>
+                            <td>POST /talks</td>
                         </tr>
                         <tr>
-                            <td>removeStock</td>
-                            <td>DELETE /stocks/AAPL</td>
+                            <td>removeTalk</td>
+                            <td>DELETE /talks/&lt;uuid&gt;</td>
                         </tr>
                         <tr>
-                            <td>getStock</td>
-                            <td>GET /stocks/AAPL</td>
+                            <td>getTalk</td>
+                            <td>GET /talks/&lt;uuid&gt;</td>
                         </tr>
                         </tbody>
                         </table>
@@ -394,44 +396,38 @@ def post(self):
                     <section>
                         <h2>GET and POST constraints</h2>
                         <p>Sometimes, firewalls, proxies, or just sending a unique HTTP method via an HTTP form is not allowed</p>
-                        <p>First we write a plugin to take <code>_method</code> and replace <code>REQUEST_METHOD</code> with that value</p>
-<pre><code class="python">
-class MethodOverride(object):
-  def __init__(self, app):
-    self.app = app
- 
-  def __call__(self, environ, start_response):
-    method = webapp.Request(environ).get('_method')
-    if method:
-      environ['REQUEST_METHOD'] = method.upper()
-    return self.app(environ, start_response)
-</code></pre>
+                        <p>First we write a middleware to take <code>X-HTTP-Method-Override</code> and replace <code>REQUEST_METHOD</code> with that value</p>
+<pre><code class="python">class HTTPMethodOverrideMiddleware(object):
+    allowed_methods = frozenset([
+        'GET',
+        'HEAD',
+        'POST',
+        'DELETE',
+        'PUT',
+        'PATCH',
+        'OPTIONS'
+    ])
+    bodyless_methods = frozenset(['GET', 'HEAD', 'OPTIONS', 'DELETE'])
+
+    def __init__(self, app):
+        self.app = app
+
+    def __call__(self, environ, start_response):
+        method = environ.get('HTTP_X_HTTP_METHOD_OVERRIDE', '').upper()
+        if method in self.allowed_methods:
+            method = method.encode('ascii', 'replace')
+            environ['REQUEST_METHOD'] = method
+        if method in self.bodyless_methods:
+            environ['CONTENT_LENGTH'] = '0'
+        return self.app(environ, start_response)</code></pre>
                     </section>
                     <section>
                         <h2>GET and POST constraints</h2>
-                        <p>Here's a test using the plugin</p>
-<pre><code class="python"> 
-from bottle import Bottle, run
+                        <p>Here's a test using the middleware</p>
+<pre><code class="python">from flask import Flask
 
-app = Bottle()
-
-@route("/test_override", method="PUT")
-def test_put():
-  return "PUT worked!"
- 
-@route("/test_override", method="DELETE")
-def test_delete():
-  return "DELETE worked!"
- 
-if __name__ == '__main__':
-    override_plugin = MethodOverride(app)
-    app.install(override_plugin)
-    run(app, host='localhost', port=8080, debug=True) 
-</code></pre>
-                        <aside class="notes">
-                            6 constraints of REST
-                            https://blog.apigee.com/detail/api_design_ruminating_over_rest
-                        </aside>
+app = Flask(__name__)
+app.wsgi_app = HTTPMethodOverrideMiddleware(app.wsgi_app)</code></pre>
                     </section>
                 </section>                
                 <section>
@@ -495,7 +491,7 @@ api.add_resource(MyAPI, '/api/my', endpoint='my')
         for idx, talk in enumerate(talks):
             if str(talk['id']) == str(id):
                 json_data = json.loads(request.data)
-                json_data['id'] = id                # just to ensure we have the right stuff
+                json_data['id'] = id
                 talks[referenced_talk_idx] = json_data
                 return jsonify(json_data)
         abort(404)
@@ -618,45 +614,95 @@ ng-boilerplate/
 </code></pre>
                     </section>                        
                 </section>
-				<section>
+                <section>
                     <section>
-    					<h2>REST module</h2>
+                        <h2>UI Routing</h2>
                         <ul>
-                            <li>$http and $resource part of core</li>
-                            <li>3rd-party Restangular is best</li>
+                            <li><code>$route</code> and <code>ngRoute</code> = part of core</li>
+                            <li>3rd-party <code>ui-router</code> = best</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>ui-router</h2>
+                        <p>Show list of talks</p>
+<pre><code class="javascript">.config(function config( $stateProvider ) {
+    $stateProvider
+        .state( 'talks', {
+            url: '/talks',
+            views: {
+                "main": {
+                    controller: 'TalksCtrl',
+                    templateUrl: 'talks/talks.tpl.html'
+                }
+            },
+            resolve: {
+                talks: function(talksService){
+                    return talksService.getTalks();
+                }
+            },
+            data:{ pageTitle: 'Talks' }
+    })
+});</code></pre>                    
+                    </section>
+                    <section>
+                        <h2>Talks List controller</h2>
+<pre><code class="javascript">
+.controller( 'TalksCtrl', function TalksCtrl( $scope, talks, talksService, ngTableParams ) {
+      $scope.talks = talks;
+      $scope.remove = function(selectedTalk) {
+          selectedTalk.remove().then(function() {
+              talksService.removeTalk(selectedTalk, $scope.talks);
+          });
+      };
+
+      /* jshint ignore:start */
+      $scope.tableParams = new ngTableParams({
+          count: $scope.talks.length
+      },{
+          counts: []
+      });
+      /* jshint ignore:end */
+})
+</code></pre>                        
+                    </section>
+                    <section>
+                        <h2>Talks List template</h2>
+                        <p><code>talks.tpl.html</code></p>
+<pre><code class="html"><button ui-sref="talksadd" class='btn btn-success'>Add Talk</button>
+<table class="table table-striped table-bordered" ng-table="tableParams">
+    <tbody>
+        <tr ng-repeat="talk in talks">
+            <td data-title="'Title'"><a ui-sref="talksview({talkID: talk.id})" >{{talk.name}}</a></td>
+            <td data-title="'Speaker'">{{talk.speaker}}</td>
+            <td data-title="'Date'">{{talk.date}}</td>
+            <td data-title="'Actions'">
+                  <button confirmed-click="remove(talk)" ng-confirm-click="Are you sure you want to delete this talk?" class="btn btn-danger">Delete</button>
+            </td>
+          </tr>
+    </tbody>
+</table></code></pre>                        
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h2>REST module</h2>
+                        <ul>
+                            <li>$http and $resource = part of core</li>
+                            <li>3rd-party Restangular = best</li>
                         </ul>
                     </section>
                     <section>
                         <h2>Restangular</h2>
 <pre><code class="javascript">
-var talks = Restangular.all("talks").getList().then(function(talks) {
-    $scope.talks = talks;
-};
+var talks = Restangular.all("talks").getList();
 </code></pre>        
                         <p><code>GET /talks</code></p>                
-				    </section>
-                </section>
-                <section>
-                    <h2>Routing w/ ui-router</h2>
-                    <p>show simple -> complex</p>
-                    <p>setup "list" route
-                </section>
-                <section>
-                    <h2>Our first controller "TalksCtrl"</h2>
-                    <p>Integrate w/ Restangular.getList</p>
-                    <p>show hack for embedded array (link to JSON hacking blog post)</p>
-                    <p>Write the template and provide a bit of detail</p>
-                </section>
-                <section>
-                    <h2>Response Interceptor</h2>
-                    <p></p>
-<pre><code class="javascript">
-// add a response intereceptor
-RestangularProvider.addResponseInterceptor(function(data, operation, what, url, response, deferred) {
+                    </section>
+                    <section>
+                        <h2>Response Interceptor</h2>
+<pre><code class="javascript">RestangularProvider.addResponseInterceptor(function(data, operation, what, url, response, deferred) {
   var extractedData;
-  // .. to look for getList operations
   if (operation === "getList") {
-      // .. and handle the data and meta data
       extractedData = data.data;
   } else {
       extractedData = data;
@@ -664,27 +710,195 @@ RestangularProvider.addResponseInterceptor(function(data, operation, what, url, 
   return extractedData;
 });
 </code></pre>                    
+                    </section>                    
                 </section>
                 <section>
-                    <h2>Extract our template code into a directive</h2>
+                    <section>
+                        <h2>Our Angular Service</h2>
+                        <p><code>GET /talks</code></p>
+<pre><code class="javascript">.factory("talksService", function(Restangular){
+    return {
+        getTalks: function(){
+            return Restangular.all("talks").getList();
+        },
+    };
+})</code></pre>
+                    </section>
+                    <section>
+                        <p><code>POST /talks</code></p>
+<pre><code class="javascript">addTalk: function(talk) {
+    return Restangular.all("talks")
+        .post(talk);
+}</code></pre>                
+                    </section>
+                    <section>
+                        <p><code>DELETE /talks/&lt;uuid&gt;</code></p>
+<pre><code class="javascript">removeTalk: function(selectedTalk, talks) {
+    var index = talks.indexOf(selectedTalk);
+    if(index > -1) {
+        talks.splice(index, 1);
+    }
+},</code></pre>
+                    </section>
+                    <section>
+                        <p><code>GET /talks/&lt;uuid&gt;</code></p>
+<pre><code class="javascript">getTalk: function(id) {
+    return Restangular.one("talks", id).get();
+},</code></pre>
+                    </section>
+                    <section>
+                        <p><code>PUT /talks/&lt;uuid&gt;</code></p>
+<pre><code class="javascript">updateTalk: function(talk) {
+    return talk.put();
+},</code></pre>
+                    </section>
                 </section>
                 <section>
-                    <h2>View Talk</h2>
-                    <p>Write the Edit and Delete views</p>
-                    <p>PUT /talks/:uuid + DELETE /talks/:uuid
-                    <p>Show form validation + flash messages</p>
+                    <section>
+                        <h2>View Talk Route</h2>
+<pre><code class="javascript">.state( 'talksview', {
+    url: '/talks/view/:talkID',
+    views: {
+      "main": {
+        controller: 'TalksViewCtrl',
+        templateUrl: 'talks/talks-view.tpl.html'
+      }
+    },
+    resolve: {
+        talk: function(talksService, $stateParams) {
+            return talksService.getTalk($stateParams.talkID);
+        }
+    },
+    data:{ pageTitle: 'View Talk' }
+  })</code></pre>                        
+                    </section>
+                    <section>                    
+                        <h2>View Talk Controller</h2>
+<pre><code class="javascript">.controller( 'TalksViewCtrl', function TalksViewCtrl( talk, $scope, $state, $stateParams ) {
+    $scope.headerText = 'View Talk';
+    $scope.id = $stateParams.talkID;
+    $scope.talk = talk;
+})</code></pre>
+                    </section>
+                    <section>
+                        <h2>View Talk Template</h2>
+<pre><code class="html"><h1 class="page-header">
+    {{ headerText }}
+    <small>- <a ui-sref="talks({ talkID: talk.id })">Return to overview</a></small>
+</h1>
+<div class="pull-right">
+    <button ui-sref="talksedit({ talkID: id })" class="btn btn-primary">Edit</button>
+</div>
+    ...
+    <div class="panel-heading">
+        <h4 class="panel-title">{{ talk.name }}</h4>
+    </div>
+    ...
+</code></pre>                        
+                    </section>
                 </section>
                 <section>
-                    <h2>Add Talk</h2>
-                    <p>Validation + Flash Messages</p>
-                </section>
+                    <section>
+                        <h2>Edit Talk Route</h2>
+<pre><code class="javascript">.state( 'talksedit', {
+    url: '/talks/edit/:talkID',
+    views: {
+      "main": {
+        controller: 'TalksEditCtrl',
+        templateUrl: 'talks/talks-edit.tpl.html'
+      }
+    },
+    resolve: {
+        talk: function(talksService, $stateParams) {
+            return talksService.getTalk($stateParams.talkID);
+        }
+    },    
+    data:{ pageTitle: 'Edit Talk' }
+  })</code></pre>                        
+                    </section>
+                    <section>                    
+                        <h2>Edit Talk Controller</h2>
+<pre><code class="javascript">.controller( 'TalksEditCtrl', function TalksEditCtrl( talk, $scope, talksService, $state, $stateParams ) {
+    $scope.headerText = 'Edit Talk';
+    $scope.id = $stateParams.talkID;
+    $scope.talk = talk;
+
+    $scope.save = function(isValid) {
+        talksService.updateTalk($scope.talk).then(function() {
+            $state.go('talksview', {talkID: $scope.talk.id});          
+        });
+    };
+
+    $scope.cancel = function() {
+        $state.go('talksview', {talkID: $scope.id});
+    };
+})</code></pre>
+                    </section>
+                    <section>
+                        <h2>Edit/Add Talk Template</h2>
+<pre><code class="html">
+<form name="talkForm" ng-submit="save(talkForm.$valid)" novalidate>
+    <div class="form-group" data-ng-class="{ 'has-error' : talkForm.name.$invalid && !talkForm.name.$pristine }">
+      <label for="name">Title</label>
+      <input type="text" name="name" data-ng-model="talk.name" class="form-control" required />
+      <p data-ng-show="talkForm.name.$invalid && !talkForm.name.$pristine" class="help-block">Title is required.</p>
+    </div>
+    ...
+
+<div class="form-group">
+    <button type="submit" class="btn btn-primary" data-ng-disabled="talkForm.$invalid">Save</button>
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+</div>
+</form>
+</code></pre>                        
+                    </section>
+                    <section>
+                        <h2>Add Talk Route</h2>
+<pre><code class="javascript">.state( 'talksadd', {
+    url: '/talks/add',
+    views: {
+      "main": {
+        controller: 'TalksAddCtrl',
+        templateUrl: 'talks/talks-edit.tpl.html'
+      }
+    },
+    data:{ pageTitle: 'Add Talk' }
+  })
+  ;
+})</code></pre>                        
+                    </section>
+                    <section>                    
+                        <h2>Edit Talk Controller</h2>
+<pre><code class="javascript">.controller( 'TalksAddCtrl', function TalksAddCtrl( $scope, talksService, $state ) {
+    $scope.headerText = 'Add Talk';
+
+    $scope.talk = {};
+
+    $scope.save = function(isValid) {
+        talksService.addTalk($scope.talk).then(function() {
+            $state.go('talks');
+        });
+    };
+
+    $scope.cancel = function() {
+        $state.go('talks');
+    };
+})</code></pre>
+                    </section>                    
+                </section>       
+                <section>
+                    <h2>DEMO</h2>
+                </section>         
                 <section>
                     <h2>AngularJS 2</h2>
                     <p>And now, forget everything.</p>
                 </section>
 				<section>
 					<h2>Helpful Links</h2>
-					<p><a href="http://something.com">Something</a></p>
+					<p><a href="https://angularjs.org">AngularJS Homepage</a></p>
+                    <p><a href="http://angularjs.blogspot.com/">AngularJS Blog</a></p>
+                    <p><a href="http://ngmodules.org/">Angular Modules</a></p>
+                    <p><a href="http://ng-learn.org/">ngLearn.org</a></p>
 				</section>
 				<section>
 					<h2>New WebSocket book</h2>

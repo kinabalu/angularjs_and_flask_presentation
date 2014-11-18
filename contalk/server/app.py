@@ -21,6 +21,18 @@ Sample for testing
     }
 """
 
+"""
+curl -i -X POST http://localhost:5000/api/talks --data \
+'{"date": "2014-11-18",
+"description": "Test",
+"name": "Talk Title",
+"speaker": "Crazy Speaker",
+"technology": "Python",
+"time": {
+"begin_time": "14:25",
+"end_time": "15:10"}
+}'
+"""
 
 talks = [
     {

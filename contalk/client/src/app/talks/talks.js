@@ -15,6 +15,11 @@ angular.module( 'ngBoilerplate.talks', [
         templateUrl: 'talks/talks.tpl.html'
       }
     },
+    resolve: {
+      talks: function(talksService){
+          return talksService.getTalks();
+      }
+    },
     data:{ pageTitle: 'Talks' }
   })
   .state( 'talksview', {
@@ -24,6 +29,11 @@ angular.module( 'ngBoilerplate.talks', [
         controller: 'TalksViewCtrl',
         templateUrl: 'talks/talks-view.tpl.html'
       }
+    },
+    resolve: {
+        talk: function(talksService, $stateParams) {
+            return talksService.getTalk($stateParams.talkID);
+        }
     },
     data:{ pageTitle: 'View Talk' }
   })
@@ -35,6 +45,11 @@ angular.module( 'ngBoilerplate.talks', [
         templateUrl: 'talks/talks-edit.tpl.html'
       }
     },
+    resolve: {
+        talk: function(talksService, $stateParams) {
+            return talksService.getTalk($stateParams.talkID);
+        }
+    },    
     data:{ pageTitle: 'Edit Talk' }
   })
   .state( 'talksadd', {
@@ -42,68 +57,44 @@ angular.module( 'ngBoilerplate.talks', [
     views: {
       "main": {
         controller: 'TalksAddCtrl',
-        templateUrl: 'talks/talks-add.tpl.html'
+        templateUrl: 'talks/talks-edit.tpl.html'
       }
     },
     data:{ pageTitle: 'Add Talk' }
   })
   ;
 })
-.controller( 'TalksCtrl', function TalksCtrl( $scope, $q, Restangular, ngTableParams ) {
+.controller( 'TalksCtrl', function TalksCtrl( $scope, talks, talksService, ngTableParams ) {
 
-    var talks = Restangular.all("talks").getList().then(function(talks) {
-        $scope.talks = talks;
+      $scope.talks = talks;
 
-        $scope.remove = function(selectedTalk) {
-            selectedTalk.remove().then(function() {
-                // update the $scope var once the repsonse is OK
-                var index = $scope.talks.indexOf(selectedTalk);
-                if(index > -1) {
-                  $scope.talks.splice(index, 1);
-                }
-                // $scope.alerts.push({ type: 'success', msg: 'You have successfully deleted the selected property'});
+      $scope.remove = function(selectedTalk) {
+          selectedTalk.remove().then(function() {
+              talksService.removeTalk(selectedTalk, $scope.talks);
+          });
+      };
 
-            });
-        };
-
-        /* jshint ignore:start */
-        $scope.tableParams = new ngTableParams({
-            count: $scope.talks.length
-        },{
-            counts: []
-        });
-        /* jshint ignore:end */
-
-    });
+      /* jshint ignore:start */
+      $scope.tableParams = new ngTableParams({
+          count: $scope.talks.length
+      },{
+          counts: []
+      });
+      /* jshint ignore:end */
 })
-.controller( 'TalksViewCtrl', function TalksViewCtrl( $scope, $state, $stateParams, Restangular ) {
+.controller( 'TalksViewCtrl', function TalksViewCtrl( talk, $scope, $state, $stateParams ) {
     $scope.headerText = 'View Talk';
     $scope.id = $stateParams.talkID;
-    Restangular.one("talks", $scope.id).get().then(function (talk) {
-        $scope.talk = talk;
-    });
-
-    $scope.remove = function(selectedTalk) {
-
-        Restangular.one('talks', selectedTalk.id).remove();
-
-        $state.transitionTo("talks", $stateParams, {
-            reload: true,
-            inherit: false,
-            notify: true
-        });        
-    };
+    $scope.talk = talk;
 })
-.controller( 'TalksEditCtrl', function TalksEditCtrl( $scope, $state, $stateParams, Restangular ) {
+.controller( 'TalksEditCtrl', function TalksEditCtrl( talk, $scope, talksService, $state, $stateParams ) {
     $scope.headerText = 'Edit Talk';
     $scope.id = $stateParams.talkID;
-    Restangular.one("talks", $scope.id).get().then(function (talk) {
-        $scope.talk = talk;
-    });
+    $scope.talk = talk;
 
     $scope.save = function(isValid) {
-        $scope.talk.put().then(function() {
-          $state.go('talksview', {talkID: $scope.talk.id});
+        talksService.updateTalk($scope.talk).then(function() {
+            $state.go('talksview', {talkID: $scope.talk.id});          
         });
     };
 
@@ -111,18 +102,15 @@ angular.module( 'ngBoilerplate.talks', [
         $state.go('talksview', {talkID: $scope.id});
     };
 })
-.controller( 'TalksAddCtrl', function TalksAddCtrl( $scope, $state, Restangular ) {
+.controller( 'TalksAddCtrl', function TalksAddCtrl( $scope, talksService, $state ) {
     $scope.headerText = 'Add Talk';
 
     $scope.talk = {};
 
     $scope.save = function(isValid) {
-        console.log("here we go:" + $scope.talk);
-        Restangular.all("talks")
-          .post($scope.talk)
-          .then(function(talk) {
-              $state.go('talks');
-          });
+        talksService.addTalk($scope.talk).then(function() {
+            $state.go('talks');
+        });
     };
 
     $scope.cancel = function() {

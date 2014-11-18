@@ -32,65 +32,29 @@ angular.module( 'ngBoilerplate', [
 .run( function run () {
 })
 
-.factory("talksService", function($q){
+.factory("talksService", function(Restangular){
     return {
         getTalks: function(){
-            return $q.when("Hello World!");
-        }
-    };
-});
-.factory('JsonFactory', function($q, $filter) {
-    return {
-        dataToRows: function(xa_table, data_object) {
-            var rows = [];
-            for(var obj in xa_table) {
-                if(xa_table.hasOwnProperty(obj)) {
-                    var valueText = "";
-                    var labelText = xa_table[obj]['label'];
-
-                    if("type" in xa_table[obj]) {
-                        if("extra" in xa_table[obj]) {
-                            valueText = $filter(xa_table[obj]['type'])(data_object[obj], xa_table[obj]['extra']);
-                        } else {
-                            valueText = $filter(xa_table[obj]['type'])(data_object[obj]);
-                        }
-                    } else {
-                        valueText = data_object[obj];
-                    }
-
-                    if("prepend" in xa_table[obj]) {
-                      valueText = xa_table[obj]['prepend'] + valueText;
-                    }
-
-                    if("append" in xa_table[obj]) {
-                        valueText += xa_table[obj]['append'];
-                    }
-
-                    var row = {
-                        "label": labelText,
-                        "value": valueText
-                    };
-                    rows.push(row);
-                }
-            }
-            return rows;
+            return Restangular.all("talks").getList();
         },
-        dataToActionRows: function(xa_table, data_object) {
-            var rows = [];
-            for(var idx in data_object) {
-                var data = data_object[idx];
-                var row = {
-                    "label": xa_table[data['type']],
-                    "value": data['value'],
-                    "action": data['action']
-                };
-                rows.push(row);
+        removeTalk: function(selectedTalk, talks) {
+            var index = talks.indexOf(selectedTalk);
+            if(index > -1) {
+                talks.splice(index, 1);
             }
-            return rows;
+        },
+        getTalk: function(id) {
+            return Restangular.one("talks", id).get();
+        },
+        updateTalk: function(talk) {
+            return talk.put();
+        },
+        addTalk: function(talk) {
+            return Restangular.all("talks")
+                .post(talk);
         }
     };
 })
-
 .directive('cancel', function() {
   return {
     restrict: 'AE',
