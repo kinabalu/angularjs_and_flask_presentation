@@ -1,0 +1,43 @@
+<h1 class="page-header">
+    {{ headerText }}
+    <small>- <a ui-sref="talks({ talkID: talk.id })">Return to overview</a></small>
+</h1>
+
+
+<p>
+
+<div class="pull-right">
+    <button ui-sref="talksedit({ talkID: id })" class="btn btn-primary">Edit</button>
+</div>
+
+<div class="clearfix"></div><p></p>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title">{{ talk.name }}</h4>
+    </div>
+    <div class="panel-body">
+        <div class="list-group">
+            <span class="list-group-item">
+                <strong>Speaker</strong>
+                <div class="pull-right">{{ talk.speaker }}</div>
+            </span>
+            <span class="list-group-item">
+                <strong>Technology</strong>
+                <div class="pull-right">{{ talk.technology }}</div>
+            </span>
+            <span class="list-group-item">
+                <strong>Description</strong>
+                <div class="pull-right">{{ talk.description }}</div>
+            </span>
+            <span class="list-group-item">
+                <strong>Date</strong>
+                <div class="pull-right">{{ talk.date }}</div>
+            </span>
+            <span class="list-group-item">
+                <strong>Time</strong>
+                <div class="pull-right">{{ talk.time.begin_time }} - {{ talk.time.end_time }}</div>
+            </span>
+        </div>
+    </div>
+</div>
+</p>

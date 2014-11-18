@@ -13,9 +13,7 @@ Sample for testing
       "description": "An awesome talk about the JavaScript framework AngularJS and using it with Flask to build a RESTful service", 
       "name": "End to end with JavaScript", 
       "speaker": "Andrew Lombardi", 
-      "technology": [
-        "JavaScript"
-      ], 
+      "technology": "JavaScript", 
       "time": {
         "begin_time": "14:25", 
         "end_time": "15:10"
@@ -29,7 +27,7 @@ talks = [
       "id": 1,
       "name": "AngularJS and Flask sitting in a tree",
       "speaker": "Andrew Lombardi",
-      "technology": ["JavaScript", "Python"],
+      "technology": "JavaScript, Python",
       "description": "An awesome talk about the JavaScript framework AngularJS and using it with Flask to build a RESTful service",
       "time": {
         "begin_time": "14:25",
@@ -41,7 +39,7 @@ talks = [
       "id": 2,
       "name": "Simple API's with bottle.py",
       "speaker": "Andrew Lombardi",
-      "technology": ["Python"],
+      "technology": "Python",
       "description": "An awesome talk",
       "time": {
         "begin_time": "14:25",
@@ -71,6 +69,7 @@ class TalksEntryAPI(Resource):
 
     def get(self, id):
         referenced_talk = self._get_talk(id)
+        print referenced_talk
         if not referenced_talk:
             abort(404)
             return
@@ -89,6 +88,12 @@ class TalksEntryAPI(Resource):
         talks[referenced_talk_idx] = json_data
         return jsonify(json_data)
 
+    def options(self, id):
+        """
+        Only referenced here to account for a possible pre-flight being asked
+        for by browsers
+        """
+        return ""
 
     def delete(self, id):
         referenced_talk_idx = self._get_talk_index(id)
@@ -106,8 +111,7 @@ class TalksAPI(Resource):
     """
 
     def get(self):
-        print('GET called')
-        return jsonify({'talks': talks})
+        return jsonify({"data": talks})
 
     def post(self):
         json_data = json.loads(request.data)

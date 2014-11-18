@@ -4,22 +4,41 @@ angular.module( 'ngBoilerplate', [
   'templates-app',
   'templates-common',
   'ngBoilerplate.home',
-  'ngBoilerplate.about',
-  'ngBoilerplate.properties',
-  'ngBoilerplate.admin',
-  'ngBoilerplate.profile',
+  'ngBoilerplate.talks',
   'ui.router'
 ])
 
 .config( function myAppConfig ( $stateProvider, $urlRouterProvider, $httpProvider, RestangularProvider ) {
   $urlRouterProvider.otherwise( '/home' );
-  // RestangularProvider.setBaseUrl('http://104.131.96.91/');
-  RestangularProvider.setBaseUrl('http://localhost:3000/');
+  RestangularProvider.setBaseUrl('http://localhost:5000/api');
+  // RestangularProvider.setBaseUrl('http://localhost:3000');
+
+
+  // add a response intereceptor
+  RestangularProvider.addResponseInterceptor(function(data, operation, what, url, response, deferred) {
+      var extractedData;
+      // .. to look for getList operations
+      if (operation === "getList") {
+          // .. and handle the data and meta data
+          extractedData = data.data;
+      } else {
+          extractedData = data;
+      }
+      return extractedData;
+  });
+
 })
 
 .run( function run () {
 })
 
+.factory("talksService", function($q){
+    return {
+        getTalks: function(){
+            return $q.when("Hello World!");
+        }
+    };
+});
 .factory('JsonFactory', function($q, $filter) {
     return {
         dataToRows: function(xa_table, data_object) {
@@ -84,7 +103,19 @@ angular.module( 'ngBoilerplate', [
     }
   };
 })
-
+.directive('ngConfirmClick', function() {
+      return {
+          link: function (scope, element, attr) {
+              var msg = attr.ngConfirmClick || "Are you sure?";
+              var clickAction = attr.confirmedClick;
+              element.bind('click',function (event) {
+                  if ( window.confirm(msg) ) {
+                      scope.$eval(clickAction);
+                  }
+              });
+          }
+      };
+})
 .directive('panel', function() {
   return {
     restrict: 'E',
@@ -126,7 +157,7 @@ angular.module( 'ngBoilerplate', [
 .controller( 'AppCtrl', function AppCtrl ( $scope, $location ) {
   $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
     if ( angular.isDefined( toState.data.pageTitle ) ) {
-      $scope.pageTitle = toState.data.pageTitle + ' | Swifter' ;
+      $scope.pageTitle = toState.data.pageTitle + ' | ConTalk' ;
     }
   });
 });

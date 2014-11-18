@@ -114,7 +114,7 @@
 						<p>&nbsp;</p>
 						<p class="fragment"><strong>To our success!</strong></p>
 					</section>
-				</section>
+				</section>                
 				<section fullscreen-img="images/rakia_63.png" />
 					<aside class="notes">
 						Known side effects: 
@@ -124,40 +124,564 @@
 						- If you drink more than 1 liter you may collapse. The bulgarian term for this condition is "Ïèÿí íà ñâèíÿ" (transcription "Pian na svinia", meaning "Drunk like a pig").
 						...oh, rakiq,oh holy martyr... (quote from a bulgarian rakia-dedicated song... actually most of the bulgarian popular music (a.k.a. chalga) is dedicated and/or result of this powerfull brew...)
 					</aside>				
-				</section>	
-				<section>
-					<h2>REST Flask module</h2>
-					<p><a href="https://flask-restless.readthedocs.org/en/latest/">Flask-Restless</a></p>
 				</section>
+                <section>
+                    <h2>What we'll cover</h2>
+                    <ul>
+                        <li class="fragment">Installing Flask</li>
+                        <li class="fragment"></li>
+                        <li class="fragment"></li>
+                        <li class="fragment"></li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>Why Flask?</h2>
+                    <ul>
+                        <li class="fragment">Simple and extensible</li>
+                        <li class="fragment">Add core functionality via extensions</li>
+                        <li class="fragment">Endlessly customizable</li>
+                    </ul>
+                </section>  					
+                <section>
+                    <section>
+                        <h2>Install flask</h2>
+                        <p class="fragment">$ pip install Flask</p>
+                        <p class="fragment">$ easy_install Flask</p>
+                    </section>
+                    <section>
+                        <h2>First install virtualenv</h2>
+                    </section>
+                    <section>
+                        <h2>Installing virtualenv</h2>
+                        <pre><code class="bash">$ pip install virtualenv</code></pre>
+                    </section>
+                    <section>
+                    <h2>Configuring virtualenv for example</h2>
+<pre><code class="bash">$ virtualenv contalk
+$ source contalk/bin/activate
+$ pip install -U Flask</code></pre>
+                    </section>
+                    <section>
+                        <h2>requirements.txt</h2>
+<pre><code class="bash">
+$ pip freeze > requirements.txt
+$ cat requirements.txt
+Flask==0.10.1
+</code></pre>
+                    </section>
+                    <section>
+                        <h2>virtualenv Directory Structure</h2>
+<pre><code class="bash">
+.
+└── contalk
+    ├── bin
+    ├── include
+    │   └── python2.7
+    └── lib
+        └── python2.7
+            └── site-packages
+</code></pre>
+                        <p class="fragment">Segmenting our dependencies and allow testing multiple python environments</p>
+                        <aside class="notes">
+                        Lots of reasons to hate virtualenv, pip, etc but we won't go into detail here.  This configuration will work.  Can be done with a true virtualized environment such as Docker.
+                        </aside>
+                    </section>
+                </section>
+                <section>
+                    <h2>Hello World example</h2>
+<pre><code class="python">
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/hello')
+def hello():
+    return 'Hello, World!'
+
+if __name__ == '__main__':
+    app.run()
+</code></pre>            
+                    <p class="fragment">Save to <code>helloworld.py</code></p>
+                    <p class="fragment"><code>$ python helloworld.py</code></p>
+                    <p class="fragment"><a href="http://localhost:5000/hello">http://localhost:5000/hello</a></p>
+                </section>
+                <section>
+                    <section>
+                        <h2>Example: Conference Talk</h2>
+                        <p><strong>ConTalk</strong> will be the example we'll use throughout this talk.  We'll build a RESTful API using Flask and use that API from AngularJS to build out a useful interface.</p>
+                    </section>
+                    <section>
+                        <h2>Sample JSON Data</h2>
+<pre><code class="json">
+{
+  "id": 1,
+  "name": "AngularJS and Flask sitting in a tree",
+  "speaker": "Andrew Lombardi",
+  "technology": "JavaScript, Python",
+  "description": "An awesome talk about the JavaScript framework AngularJS and using it with Flask to build a RESTful service",
+  "time": {
+    "begin_time": "14:25",
+    "end_time": "15:10"
+  },
+  "date": "2014-11-18"
+},
+{
+  "id": 2,
+  "name": "Simple API's with bottle.py",
+  "speaker": "Andrew Lombardi",
+  "technology": "Python",
+  "description": "An awesome talk",
+  "time": {
+    "begin_time": "14:25",
+    "end_time": "15:10"
+  },
+  "date": "2014-11-19"
+}
+</code></pre>
+                    </section>                        
+                    <section>
+                        <h2>Get list of talks</h2>
+                        <p><code>GET /talks</code></p>
+<pre><code class="python">
+from flask import Flask, jsonify, request
+from flask.ext.restful import Api, Resource
+
+app = Flask(__name__)
+api = Api(app)
+
+class TalksAPI(Resource):
+    def get(self):
+        return jsonify({"data": talks})
+
+api.add_resource(TalksAPI, '/api/talks', endpoint='talks')
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', debug=True)
+</code></pre>
+                    </section>
+                    <section>
+                        <h2>Flask-Restful using flat file</h2>
+                        <p>No DB needed!</p>
+                    </section>
+                    <section>
+                        <h2>Testing GET talks list</h2>   
+<pre><code class="bash">
+curl -i -X GET http://localhost:5000/api/talks
+HTTP/1.0 200 OK
+Content-Type: application/json
+Content-Length: 727
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: HEAD, GET, POST, OPTIONS
+Access-Control-Max-Age: 21600
+Access-Control-Allow-Headers: ACCEPT, CONTENT-TYPE, X-REQUESTED-WITH
+Server: Werkzeug/0.9.6 Python/2.7.6
+Date: Tue, 18 Nov 2014 01:10:12 GMT
+
+{"data": [{"date": "2014-11-18","description": "An awesome talk about the JavaScript framework AngularJS and using it with Flask to build a RESTful service","id": 1,"name": "AngularJS and Flask sitting in a tree","speaker": "Andrew Lombardi","technology": "JavaScript, Python","time": {"begin_time": "14:25","end_time": "15:10"}}]}
+</code></pre>                                             
+                    </section>
+                    <section>
+                        <h2>Adding a talk</h2>
+                        <p><code>POST /talks</code></p>
+<pre><code class="python">
+import json, uuid
+
+def post(self):
+    json_data = json.loads(request.data)
+    new_id = uuid.uuid4()
+    json_data['id'] = new_id
+    talks.append(json_data)
+    return jsonify({"id": json_data['id']})
+</code></pre>                        
+                    </section>
+                    <section>
+                        <h2>curl -X POST</h2>
+                    </section>
+                    <section>
+                        <h2>What about PUT, PATCH, and DELETE?</h2>
+                        <p>With <a href="http://flask-restful.readthedocs.org">Flask-Restful</a> if we don't define functions for handling HTTP methods, it
+                        sends back a <code>405 Method Not Allowed</code></p>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h2>Overview of REST</h2>                       
+                    </section>
+                    <section>
+                        <h2>Nouns not verbs</h2>
+                        <table width="100%">
+                        <thead>
+                            <th>Bad</th>
+                            <th>Good</th>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>getStocks</td>
+                            <td>GET /stocks</td>
+                        </tr>
+                        <tr>
+                            <td>addStock</td>
+                            <td>POST /stocks</td>
+                        </tr>
+                        <tr>
+                            <td>removeStock</td>
+                            <td>DELETE /stocks/AAPL</td>
+                        </tr>
+                        <tr>
+                            <td>getStock</td>
+                            <td>GET /stocks/AAPL</td>
+                        </tr>
+                        </tbody>
+                        </table>
+                    </section>
+                    <section>
+                        <h2>HTTP methods = verbs</h2>
+                        <p><a href="http://example.com/resources">http://example.com/resources</a></p>
+                        <table width="100%">
+                        <thead>
+                            <th>Method</th>
+                            <th>Action</th>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><h1>GET</h1></td>
+                            <td>List the members of the collection</td>
+                        </tr>
+                        <tr>
+                            <td><h1>PUT</h1></td>
+                            <td>Replace the entire collection with another collection</td>
+                        </tr>
+                        <tr>
+                            <td><h1>POST</h1></td>
+                            <td>Create new entry in collection</td>
+                        </tr>
+                        <tr>
+                            <td><h1>DELETE</h1></td>
+                            <td>Delete the entire collection</td>
+                        </tr>
+                        </tbody>
+                        </table>
+                    </section>
+                    <section>
+                        <h2>HTTP methods = verbs</h2>
+                        <p><a href="http://example.com/resources/42">http://example.com/resources/42</a></p>
+                        <table width="100%">
+                        <thead>
+                            <th>Method</th>
+                            <th>Action</th>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><h1>GET</h1></td>
+                            <td>Return the referenced member of the collection</td>
+                        </tr>
+                        <tr>
+                            <td><h1>PUT</h1></td>
+                            <td>Create or update the referenced member of the collection</td>
+                        </tr>
+                        <tr>
+                            <td><h1>POST</h1></td>
+                            <td>Generally unused on specific members</td>
+                        </tr>
+                        <tr>
+                            <td><h1>DELETE</h1></td>
+                            <td>Delete the referenced member of collection</td>
+                        </tr>
+                        </tbody>
+                        </table>
+                    </section>                  
+                    <section>
+                        <h2>GET and POST constraints</h2>
+                        <p>Sometimes, firewalls, proxies, or just sending a unique HTTP method via an HTTP form is not allowed</p>
+                        <p>First we write a plugin to take <code>_method</code> and replace <code>REQUEST_METHOD</code> with that value</p>
+<pre><code class="python">
+class MethodOverride(object):
+  def __init__(self, app):
+    self.app = app
+ 
+  def __call__(self, environ, start_response):
+    method = webapp.Request(environ).get('_method')
+    if method:
+      environ['REQUEST_METHOD'] = method.upper()
+    return self.app(environ, start_response)
+</code></pre>
+                    </section>
+                    <section>
+                        <h2>GET and POST constraints</h2>
+                        <p>Here's a test using the plugin</p>
+<pre><code class="python"> 
+from bottle import Bottle, run
+
+app = Bottle()
+
+@route("/test_override", method="PUT")
+def test_put():
+  return "PUT worked!"
+ 
+@route("/test_override", method="DELETE")
+def test_delete():
+  return "DELETE worked!"
+ 
+if __name__ == '__main__':
+    override_plugin = MethodOverride(app)
+    app.install(override_plugin)
+    run(app, host='localhost', port=8080, debug=True) 
+</code></pre>
+                        <aside class="notes">
+                            6 constraints of REST
+                            https://blog.apigee.com/detail/api_design_ruminating_over_rest
+                        </aside>
+                    </section>
+                </section>                
+                <section>
+                    <section>
+                    <h2>Serving our API from different domain</h2>
+                    </section>
+                    <section>
+                        <h2>CORS</h2>
+                        <ul>
+                            <li class="fragment"><strong>C . </strong>ross</li>
+                            <li class="fragment"><strong>O . </strong>rigin</li>
+                            <li class="fragment"><strong>R . </strong>esource</li>
+                            <li class="fragment"><strong>S . </strong>haring</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>OPTIONS and preflight</h2>
+                        <p class="fragment">More complex CORS request comes with preflight</p>
+                        <ul>
+                            <li class="fragment">Custom headers are used in the request</li>
+                            <li class="fragment">An HTTP method other than GET, HEAD, or POST used</li>
+                            <li class="fragment">POST used but Content-Type other than <code>application/x-www-form-urlencoded</code>, <code>multipart/form-data</code>, <code>text/plain</code></li>
+                        </ul>
+                        <aside class="notes">
+                        This was shown to be a problem and head scratcher because certain javascript libraries were sending a custom header 'X-Requested-With' when issuing a request and it triggered the preflight.
+                        </aside>
+                    </section>
+                    <section>
+                        <h2>CORS with Flask-Restful</h2>
+<pre><code class="python">class MyAPI(Resource):
+    def options(self):
+        return ""
+
+api.decorators = [cors.crossdomain(origin='*', 
+                  headers=['accept', 'Content-Type', 'X-Requested-With'])]
+api.add_resource(MyAPI, '/api/my', endpoint='my')
+
+</code></pre>
+                    </section>
+                </section> 
+                <section>
+                    <section>
+                        <h2>Member REST calls</h2>
+                    </section>
+                    <section>
+                        <h2>Get referenced talk</h2>
+                        <p><code>GET /talks/&lt;uuid&gt;</code></p>
+<pre><code class="python">
+    def get(self, id):
+        for talk in talks:
+            if str(talk['id']) == str(id):
+                return jsonify(talk)
+        abort(404)
+</code></pre>
+                    </section>
+                    <section>
+                        <h2>Update referenced talk</h2>
+                        <p><code>PUT /talks/&lt;uuid&gt;</code></p>
+<pre><code class="python">
+    def put(self, id):
+        for idx, talk in enumerate(talks):
+            if str(talk['id']) == str(id):
+                json_data = json.loads(request.data)
+                json_data['id'] = id                # just to ensure we have the right stuff
+                talks[referenced_talk_idx] = json_data
+                return jsonify(json_data)
+        abort(404)
+        return
+</code></pre>
+                    </section>
+                    <section>
+                        <h2>Deleting referenced talk</h2>
+                        <p><code>DELETE /talks/&lt;uuid&gt;</code></p>
+<pre><code class="python">                        
+    def delete(self, id):
+        for idx, talk in enumerate(talks):
+            if str(talk['id']) == str(id):
+                del talks[referenced_talk_idx]
+                return
+        abort(404)
+        return
+</code></pre>
+                    </section>
+                </section>
+                <section>
+                    <h2>Integration with middleware</h2>
+<pre><code class="python">
+from cherrypy import wsgiserver
+from app import app
+
+d = wsgiserver.WSGIPathInfoDispatcher({'/': app})
+server = wsgiserver.CherryPyWSGIServer(('0.0.0.0', 8080), d)
+
+if __name__ == '__main__':
+   try:
+      server.start()
+   except KeyboardInterrupt:
+      server.stop()
+</code></pre>               
+                    <p class="fragment">Save as <code>server.py</code></p>
+                    <p class="fragment"><code>$ python server.py</code></p>
+                    <p class="fragment"><a href="http://localhost:8080/api/talks">http://localhost:8080/api/talks</a></p>
+                    <aside class="notes">
+                    Here we can talk through how to integrate Flask with cherrypy, etc.
+                    </aside>
+                </section>
+                <section>
+                    <h2>Why AngularJS?</h2>
+                    <ul>
+                        <li class="fragment">Extends the DOM -- designer friendly</li>
+                        <li class="fragment">Leverages Dependency Injection</li>
+                        <li class="fragment">Modularity</li>
+                        <li class="fragment">Fully embraces testing</li>  
+                    </ul>
+                </section>
+                <section>
+                    <h2>AngularJS Feelings Over Time</h2>
+                    <img src="images/feelings_about_angularjs_over_time.png" class="noborder" />
+                </section>
+                <section>
+                    <h2>Hello, World Example</h2>
+<pre><code class="html">
+&lt;!DOCTYPE html&gt;
+&lt;html ng-app&gt;
+&lt;head&gt;
+    <title>Hello World!</title>
+    <script type="text/javascript"
+        src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+&lt;/head&gt;
+&lt;body&gt;
+
+    Name: <input type="text" ng-model="name" />
+    <h1>Hello {{ name }}</h1>
+
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>                    
+                </section>
+                <section>
+                    <section>
+                    <h2>Kickstart with ngbp</h2>
+                    <p><a href="https://github.com/ngbp/ngbp">https://github.com/ngbp/ngbp</a></p>
+                    <p>Provides a basic framework for kickstarting AngularJS projects.  Has an awesome directory structure
+                    and bakes in:
+                    <ul>
+                        <li>Twitter Bootstrap</li>
+                        <li>Angular UI</li>
+                        <li>Angular Bootstrap</li>
+                        <li>Font Awesome</li>
+                        <li>Grunt</li>
+                        <li>LESS</li>
+                    </ul>
+                    <aside class="notes">
+                    Just clone and go
+                    </aside>
+                    </p>
+                    </section>
+                    <section>
+                        <h2>ngbp directory structure</h2>
+<pre><code class="bash">
+ng-boilerplate/
+  |- grunt-tasks/
+  |- karma/
+  |- src/
+  |  |- app/
+  |  |  |- &lt;app logic&gt;
+  |  |- assets/
+  |  |  |- &lt;static files&gt;
+  |  |- common/
+  |  |  |- &lt;reusable code&gt;
+  |  |- less/
+  |  |  |- main.less
+  |- vendor/
+  |  |- angular-bootstrap/
+  |  |- bootstrap/
+  |  |- placeholders/
+  |- .bowerrc
+  |- bower.json
+  |- build.config.js
+  |- Gruntfile.js
+  |- module.prefix
+  |- module.suffix
+  |- package.json
+</code></pre>
+                    </section>                        
+                </section>
 				<section>
-				We're going to use flask, flask-restless, and sqlalchemy to build out a simple REST api for listing out conference talks and administrating them.
-
-				Including 
-					GET /talks
-					POST /talks
-					GET /talks/:uuid
-					PUT /talks/:uuid
-					DELETE /talks/:uuid
-
-				talk about the same things from bottle, so how do we deal with CORS?
-				Do we implement oauth??
-
-				Then we're going to use ngBoilerplate for AngularJS to create an admin interface to the whole thing.  It will make use of Restangular to grab the data, and we'll use controllers, directives, and services in our code
-
-				Talk about reasons why to choose Flask (the microframework) over Django the heavy framework
-				Talk about reasons to choose Angular over Backbone, Ember, and others
-				Find that graph from tjsnell on AngularJS adoption
-				</section>
-				<section>
-					<h2>REST modules</h2>
-					<p>$http</p>
-					<p>$resource</p>
-					<p>Restangular</p>
-				</section>
-				<section>
-					<h2>Restangular</h2>
-					<p>Better.  Why?</p>
-				</section>
+                    <section>
+    					<h2>REST module</h2>
+                        <ul>
+                            <li>$http and $resource part of core</li>
+                            <li>3rd-party Restangular is best</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Restangular</h2>
+<pre><code class="javascript">
+var talks = Restangular.all("talks").getList().then(function(talks) {
+    $scope.talks = talks;
+};
+</code></pre>        
+                        <p><code>GET /talks</code></p>                
+				    </section>
+                </section>
+                <section>
+                    <h2>Routing w/ ui-router</h2>
+                    <p>show simple -> complex</p>
+                    <p>setup "list" route
+                </section>
+                <section>
+                    <h2>Our first controller "TalksCtrl"</h2>
+                    <p>Integrate w/ Restangular.getList</p>
+                    <p>show hack for embedded array (link to JSON hacking blog post)</p>
+                    <p>Write the template and provide a bit of detail</p>
+                </section>
+                <section>
+                    <h2>Response Interceptor</h2>
+                    <p></p>
+<pre><code class="javascript">
+// add a response intereceptor
+RestangularProvider.addResponseInterceptor(function(data, operation, what, url, response, deferred) {
+  var extractedData;
+  // .. to look for getList operations
+  if (operation === "getList") {
+      // .. and handle the data and meta data
+      extractedData = data.data;
+  } else {
+      extractedData = data;
+  }
+  return extractedData;
+});
+</code></pre>                    
+                </section>
+                <section>
+                    <h2>Extract our template code into a directive</h2>
+                </section>
+                <section>
+                    <h2>View Talk</h2>
+                    <p>Write the Edit and Delete views</p>
+                    <p>PUT /talks/:uuid + DELETE /talks/:uuid
+                    <p>Show form validation + flash messages</p>
+                </section>
+                <section>
+                    <h2>Add Talk</h2>
+                    <p>Validation + Flash Messages</p>
+                </section>
+                <section>
+                    <h2>AngularJS 2</h2>
+                    <p>And now, forget everything.</p>
+                </section>
 				<section>
 					<h2>Helpful Links</h2>
 					<p><a href="http://something.com">Something</a></p>

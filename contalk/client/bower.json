@@ -1,6 +1,6 @@
 {
-  "name": "swiftrp",
-  "version": "0.3.2",
+  "name": "talks",
+  "version": "0.1.0",
   "devDependencies": {
     "angular": "~1.2",
     "angular-mocks": "~1.2",
