@@ -10,7 +10,7 @@ angular.module( 'ngBoilerplate', [
 
 .config( function myAppConfig ( $stateProvider, $urlRouterProvider, $httpProvider, RestangularProvider ) {
   $urlRouterProvider.otherwise( '/home' );
-  RestangularProvider.setBaseUrl('http://localhost:5000/api');
+  RestangularProvider.setBaseUrl('http://localhost:8080/api');
   // RestangularProvider.setBaseUrl('http://localhost:3000');
 
 
